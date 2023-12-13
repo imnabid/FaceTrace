@@ -12,8 +12,8 @@ root.render(
   <React.StrictMode>
     <BrowserRouter>
      
-   
-          <App />{" "}
+   <SnackbarProvider>
+          <App />{" "}</SnackbarProvider>
        
     </BrowserRouter>
   </React.StrictMode>

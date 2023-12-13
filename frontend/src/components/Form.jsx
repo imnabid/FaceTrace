@@ -4,8 +4,53 @@ import { Container, Box, Grid, Typography, Button } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import { Input, InputLabel, InputAdornment, IconButton } from "@mui/material";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
-
+import { municipalities } from "./municpalities_name";
+import { districts } from "./districts_name";
+import PoliceLogo from "./Images/nppolicelogo.png";
+import { useSnackbar } from "notistack";
 const Form = () => {
+  const { enqueueSnackbar } = useSnackbar();
+  const [gender, setGender] = useState("");
+  const handleChangesex = (event) => {
+    setGender(event.target.value);
+  };
+
+  const [selectedDistrict, setSelectedDistrict] = useState("");
+  const [selectedMunicipality, setSelectedMunicipality] = useState("");
+
+  const handleDistrictChange = (event) => {
+    const selectedDistrict = event.target.value;
+    setSelectedDistrict(selectedDistrict);
+
+    setSelectedMunicipality("");
+  };
+
+  const handleMunicipalityChange = (event) => {
+    setSelectedMunicipality(event.target.value);
+    
+  };
+  const resetForm = () => {
+    setUser({
+      firstnameuser: "",
+      lastnameuser: "",
+      addressuser: "",
+      numberuser: "",
+      firstname: "",
+      lastname: "",
+      citizenshipnumber: "",
+      moredetails: "",
+      number: "",
+      age: "",
+      gender: "",
+      selectedDistrict: "",
+      date:"",
+      selectedMunicipality: "",
+    });
+    setGender("");
+    setSelectedDistrict("");
+    setSelectedMunicipality("");
+    setSelectedImage(null);
+  };
   const handleSubmit = async () => {
     try {
       const response = await fetch("http://localhost:8000/submit-form", {
@@ -24,18 +69,22 @@ const Form = () => {
             firstname: user.firstname,
             lastname: user.lastname,
             age: user.age,
-            height: user.height,
-            address: user.address,
-            resident: user.resident,
             citizenshipnumber: user.citizenshipnumber,
             number: user.number,
             moredetails: user.moredetails,
+            gender: user.gender,  
+            selectedDistrict: user.selectedDistrict,  
+            selectedMunicipality: user.selectedMunicipality, 
+            date:user.date
           },
         }),
+        
       });
 
       if (response.ok) {
         console.log("Form submitted successfully!");
+        resetForm()
+        enqueueSnackbar("Form is submitted sucessfully",{ variant: 'success' })
       } else {
         console.error("Form submission failed:", response.statusText);
       }
@@ -52,7 +101,6 @@ const Form = () => {
       setSelectedImage(file);
     }
   };
-
   const [user, setUser] = useState({
     firstnameuser: "",
     lastnameuser: "",
@@ -61,21 +109,24 @@ const Form = () => {
     firstname: "",
     lastname: "",
     citizenshipnumber: "",
-    address: "",
-    resident: "",
     moredetails: "",
     number: "",
-    height: "",
     age: "",
-    image: "",
+    date:"",
+    gender: "",  
+    selectedDistrict: "",  
+    selectedMunicipality: "", 
   });
+  
   const handeleChange = (e) => {
-    const { name, value } = e.target;
-    setUser({
-      ...user,
-      [name]: value,
-    });
+    const { name, value } = e.target;    
+      setUser({
+        ...user,
+        [name]: value,
+      });
+     
   };
+  
   return (
     <>
       <React.Fragment>
@@ -92,6 +143,42 @@ const Form = () => {
               mx: "auto",
             }}
           >
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                mb: 1,
+                mt: -2,
+                
+              }}
+            >
+              <img
+             
+                src={PoliceLogo}
+                alt="PoliceLogo"
+                style={{ height: "70px", width: "75px" }}
+              />
+            </Box>
+            <Typography
+              sx={{
+                textAlign: "center",
+                fontSize: 18,
+                fontWeight: "700",
+                color: "#004163",
+                
+              }}
+              
+            >
+              Crime Investment Department
+            </Typography>
+            <Typography sx={{
+                textAlign: "center",
+                fontSize: 15,
+                fontWeight: "700",
+                color: "#004163",
+                mb:2
+              }}>"वस्तुनिष्ठ अपराध अनुसन्धान, मानव अधिकारको सम्मान"</Typography>
             <Typography
               sx={{ textAlign: "center", fontSize: 18, fontWeight: "700" }}
             >
@@ -203,6 +290,7 @@ const Form = () => {
             <Grid spacing={2} container>
               <Grid item lg={6} md={6} xs={12}>
                 <TextField
+                
                   onChange={handeleChange}
                   value={user.age}
                   name="age"
@@ -219,55 +307,87 @@ const Form = () => {
               </Grid>
               <Grid item lg={6} md={6} xs={12}>
                 <TextField
-                  onChange={handeleChange}
-                  value={user.height}
-                  type="number"
-                  name="height"
+                  name="gender"
+                  select
+                  value={user.gender}
+                  onChange={handleChangesex}
                   sx={{
                     mt: 2,
 
                     mb: 2,
                   }}
-                  id="outlined-basic"
-                  label="Height"
-                  variant="outlined"
-                  fullWidth
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">Ft</InputAdornment>
-                    ),
+                  SelectProps={{
+                    native: true,
                   }}
-                />
+                  fullWidth
+                >
+                  <option value="" disabled>
+                    Select Gender
+                  </option>
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                </TextField>
               </Grid>
             </Grid>
-            <TextField
-              onChange={handeleChange}
-              value={user.address}
-              name="address"
-              sx={{
-                mt: 2,
+            <Grid container spacing={2}>
+              <Grid item lg={6} md={6} xs={12}>
+                <TextField
+                  label=""
+                  select
+                  name="selectedDistrict"
+                  value={selectedDistrict}
+                  onChange={handleDistrictChange}
+                  SelectProps={{
+                    native: true,
+                  }}
+                  fullWidth
+                  sx={{
+                    mt: 2,
 
-                mb: 2,
-              }}
-              id="outlined-basic"
-              label=" Permanent Address"
-              variant="outlined"
-              fullWidth
-            />
-            <TextField
-              onChange={handeleChange}
-              value={user.resident}
-              name="resident"
-              sx={{
-                mt: 2,
+                    mb: 2,
+                  }}
+                >
+                  <option value="" disabled>
+                    Select District
+                  </option>
+                  {districts.map((district) => (
+                    <option key={district} value={district}>
+                      {district}
+                    </option>
+                  ))}
+                </TextField>
+              </Grid>
+              <Grid item lg={6} md={6} xs={12}>
+                {selectedDistrict && (
+                  <TextField
+                    label=""
+                    select
+                    name="selectedMunicipality"
+                    value={selectedMunicipality}
+                    onChange={handleMunicipalityChange}
+                    SelectProps={{
+                      native: true,
+                    }}
+                    fullWidth
+                    sx={{
+                      mt: 2,
 
-                mb: 2,
-              }}
-              id="outlined-basic"
-              label=" Resident"
-              variant="outlined"
-              fullWidth
-            />
+                      mb: 2,
+                    }}
+                  >
+                    <option value="" disabled>
+                      Select Municipality
+                    </option>
+                    {municipalities[selectedDistrict].map((municipality) => (
+                      <option key={municipality} value={municipality}>
+                        {municipality}
+                      </option>
+                    ))}
+                  </TextField>
+                )}
+              </Grid>
+            </Grid>
+
             <TextField
               onChange={handeleChange}
               value={user.citizenshipnumber}
@@ -282,7 +402,7 @@ const Form = () => {
               variant="outlined"
               fullWidth
             />
-            <TextField
+           <Grid container spacing={2}><Grid item lg={6} md={6} xs={12}> <TextField
               onChange={handeleChange}
               value={user.number}
               name="number"
@@ -295,7 +415,23 @@ const Form = () => {
               label="Mobile Number"
               variant="outlined"
               fullWidth
-            />
+            /></Grid>
+            <Grid item lg={6} md={6} xs={12}> <TextField
+              onChange={handeleChange}
+              value={user.date}
+              name="date"
+              sx={{
+                mt: 2,
+
+                mb: 2,
+              }}
+              id="outlined-basic"
+          
+              type="date"
+              variant="outlined"
+              fullWidth
+            /></Grid>
+            </Grid>
             <TextField
               onChange={handeleChange}
               value={user.moredetails}
@@ -306,7 +442,7 @@ const Form = () => {
                 mb: 2,
               }}
               id="outlined-basic"
-              label="More about the Person"
+              label="More about the Person "
               variant="outlined"
               fullWidth
               multiline
