@@ -56,7 +56,11 @@ const Navbar = () => {
   });
 
   return (
-    <Box sx={{ direction: "vertical", position: "static", width: "100%" }}>
+    <Box sx={{  direction: "vertical",
+    position: "sticky",
+    top: 0,
+    zIndex: 1000,
+    width: "100%", }}>
       <Grid container sx={{ position: "static", backgroundColor: "#004163" }}>
         {!isExtraSmallScreen && (
           <Grid item xs={12} sm={12} md={3}>

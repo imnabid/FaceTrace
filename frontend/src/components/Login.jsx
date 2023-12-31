@@ -54,6 +54,7 @@ const Signin = ({ }) => {
     email: "",
     password: "",
     username: "",
+    batch_id:""
   });
   const handeleChange = (e) => {
     const { name, value } = e.target;
@@ -70,8 +71,8 @@ const Signin = ({ }) => {
           {" "}
           <Grid container spacing={2} sx={{ marginTop: "auto" }}>
           <Grid item xs={12} lg={6} md={6}>
-           <Box sx={{ bgcolor:"#004163",paddingTop: { xs: "10%", md: "30%" },
-          paddingBottom: { xs: "10%", md: "40%" },mt:-2}}> <Box
+           <Box sx={{ bgcolor:"#004163",paddingTop: { xs: "10%", md: "35%" },
+          paddingBottom: { xs: "10%", md: "50%" },mt:-2}}> <Box
               sx={{
                 display: "flex",
                 alignItems: "center",
@@ -146,6 +147,21 @@ const Signin = ({ }) => {
                 variant="outlined"
                 fullWidth
               />
+               <TextField
+                name="batch_id"
+                value={user.batch_id}
+                sx={{
+                  mt: 2,
+                 
+                  mb: 2,
+                 
+                }}
+                id="outlined-basic"
+                label="Batch id"
+                variant="outlined"
+                onChange={handeleChange}
+                fullWidth
+              />
               <FormControl
                 sx={{
                  
@@ -198,8 +214,8 @@ const Signin = ({ }) => {
               >
                 LogIn
               </Button>
-              <Link to="/forget-password">
-                <Typography sx={{ textAlign: "center", mt: 1 }}>
+              <Link to="/forgetpassword">
+                <Typography sx={{ textAlign: "center", mt: 1 }} >
                   Forget Password?
                 </Typography>
               </Link>

@@ -23,34 +23,42 @@ import { useSnackbar } from "notistack";
 const Register = () => {
   const { enqueueSnackbar } = useSnackbar();
   const handleClickVariant = (variant) => async () => {
-    const { name, email, password, repassword, branch } = user;
-    
-    if (name && email && password && branch && password === repassword) {
-      try {
-        const response = await fetch("http://localhost:8000/register", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(user),
-        });
-  
-        const data = await response.json();
-  
-        enqueueSnackbar(data.message, { variant });
-        navigate("/login");
-      } catch (error) {
-        console.error("Error:", error);
-      }
+    const { name, email, password, repassword, batch_id } = user;
+
+    if (name && email && password && batch_id && batch_id[0].match(/[a-zA-Z]/) && batch_id.slice(-1).match(/[0-9]/) && password === repassword ) {
+        try {
+            const response = await fetch("http://localhost:8000/register", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(user),
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                enqueueSnackbar(data.message, { variant: "success" });
+                
+                // Check if registration was successful before navigating
+                if (data.user) {
+                    navigate("/login");
+                }
+            } else {
+            
+                enqueueSnackbar(data.message, { variant: "error" });
+            }
+        } catch (error) {
+            console.error("Error:", error);
+        }
+    } else if (password !== repassword) {
+        enqueueSnackbar("Your password didn't match", { variant: "error" });
+    } else {
+        enqueueSnackbar("Please fill the form correctly", { variant: "error" });
     }
-    else if(password!=repassword) {
-      enqueueSnackbar("your password didn't match", { variant:"error" });
-    }
-    
-    else {
-      enqueueSnackbar("Please fill the form correctly", { variant: "error" });
-    }
-  };
+};
+
+
   
   const navigate=useNavigate()
   const [showPassword, setShowPassword] = React.useState(false);
@@ -65,7 +73,7 @@ const Register = () => {
     email: "",
     password: "",
     repassword: "",
-    branch: "",
+    batch_id: "",
   });
   const handeleChange = (e) => {
     const { name, value } = e.target;
@@ -172,7 +180,7 @@ const Register = () => {
                 <FormControl
                   sx={{
                     mr: 2,
-                    mt: 2,
+                    mt: 2,mb:2
                    
                   }}
                   variant="outlined"
@@ -212,7 +220,7 @@ const Register = () => {
                   fullWidth
                 >
                   <InputLabel htmlFor="outlined-adornment-password">
-                    Re-Password
+                   Confrim Password
                   </InputLabel>
                   <OutlinedInput
                     id="outlined-adornment-password"
@@ -239,8 +247,8 @@ const Register = () => {
 
             
               <TextField
-                name="branch"
-                value={user.branch}
+                name="batch_id"
+                value={user.batch_id}
                 sx={{
                   mt: 2,
                  
@@ -248,7 +256,7 @@ const Register = () => {
                  
                 }}
                 id="outlined-basic"
-                label="Branch"
+                label="Batch id"
                 variant="outlined"
                 onChange={handeleChange}
                 fullWidth

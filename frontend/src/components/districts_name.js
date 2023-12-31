@@ -75,5 +75,5 @@ export  const districts = [
     'Taplejung',
     'Terhathum',
     'Udayapur',
-    'Western Rukum'
+    'WesternRukum'
   ];
