@@ -1,10 +1,11 @@
 import * as React from 'react';
 import { styled, useTheme } from '@mui/material/styles';
-
+import { useEffect, useState } from 'react';
+import {useNavigate} from 'react-router-dom'
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
-import { AppBar, Button, Toolbar, Typography, useScrollTrigger, useMediaQuery, TextField, createTheme, Tabs, Tab, useState} from '@mui/material';
+import { AppBar, Button, Toolbar, Typography, useScrollTrigger, useMediaQuery, TextField, createTheme, Tabs, Tab, SwipeableDrawer, Drawer, Accordion, AccordionSummary, AccordionDetails, IconButton} from '@mui/material';
 import { UseScrollTrigger, Slide } from '@mui/material';
 import { BiSolidContact } from "react-icons/bi";
 import { FaInstagram, FaPhone } from "react-icons/fa6";
@@ -24,18 +25,47 @@ import { IoMenuOutline } from "react-icons/io5";
 
 
 
+
 const Navbar = () => {
+  const navigate = useNavigate()
+  
     const theme = useTheme()
     const NavTabs =['Home', 'About Us', 'Organisation Structure', 'CID Wings', 'Notices']
-    const [value, setValue] = React.useState(0);
+    const [value, setValue] = useState(0);
+    const[isScrolled, setIsScrolled] = useState(false)
 
     const handleChange = (event, newValue) => {
       setValue(newValue)}
+
+      useEffect(()=>{
+        const handleScroll = () => {
+          setIsScrolled(window.scrollY > 28);
+          console.log(window.scroll.Y)
+        };
+    
+        window.addEventListener('scroll', handleScroll);
+    
+        return () => {
+          window.removeEventListener('scroll', handleScroll);
+        };
+
+      },[])
+      
+      const [expanded, setExpanded] = useState(false);
+      const [selectedTab, setSelectedTab] = useState(0);
+
+      const handleAccordionChange = (event, newValue) => {
+        setSelectedTab(newValue);
+      };
+    const handleAccordionClick=()=>{
+     setExpanded(!expanded)
+    }
     
 
     const isExtraSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
     const isMediumScreen = useMediaQuery(theme.breakpoints.down('md'));
-    console.log(isExtraSmallScreen)
+    const isMediumScreen2 = useMediaQuery(theme.breakpoints.up('md'));
+    console.log(isMediumScreen2)
 
 
     const trigger = useScrollTrigger({
@@ -48,16 +78,28 @@ const Navbar = () => {
     
     
   return (
-    <Box  sx={{direction:'vertical', position:'fixed', width:'100%'}}>
+    <>
+   
          
-    <Grid container sx={{ position:'static', backgroundColor:'#004163'}} >
+    <Grid container sx={{
+      
+      backgroundColor: '#004163',
+      width:'100%',
+    
+      
+          height:isMediumScreen2 ? '28px':isMediumScreen && isExtraSmallScreen ? '56px':'84px',
+          zIndex: isScrolled ? 0 : 1000,
+          
+        
+     }}
+           >
     {!isExtraSmallScreen && (
-      <Grid item xs={12} sm={12} md={3} >
+      <Grid item xs={12} sm={12} md={4.5} >
         <Box sx={{display:'flex', flexDirection:'row',alignItems: 'center'}}>
                           
         
         <BiSolidContact style ={{color:'white', paddingLeft:isMediumScreen ? 0 :  '12%', fontSize:'1.4rem', paddingTop:'1%'}}/>
-        <Typography style={{fontFamily:'Arial', color:'white', fontSize:'.8rem', paddingLeft:'2%', paddingTop:'1%'}}>
+        <Typography style={{fontFamily:'Arial', color:'white', fontSize:'.75rem', paddingLeft:'2%', paddingTop:'1%'}}>
           
            Emergency Contacts
           
@@ -71,13 +113,13 @@ const Navbar = () => {
                           
         
                           <FaPhone  style ={{color:'white', paddingTop:'1%'}}/>
-                          <Typography  style={{fontFamily:'Arial', color:'white', fontSize:'0.8rem', paddingLeft:'2%', paddingTop:'1%'}}>
+                          <Typography  style={{fontFamily:'Arial', color:'white', fontSize:'0.75rem', paddingLeft:'2%', paddingTop:'1%'}}>
                           Police Control: 100, Toll Free No.: 16600141516
                           </Typography>
                           </Box>
        
       </Grid>
-      <Grid item xs={12} sm={12} md={5}>
+      <Grid item xs={12} sm={12} md={3.5}>
       <Box sx={{display:'flex', flexDirection:'row',alignItems: 'center', color:'white'}}>
                          
         
@@ -118,44 +160,58 @@ const Navbar = () => {
       
       
     </Grid>
-    <Slide appear = {false} direction='down' in ={!trigger}>
-    <Grid container  sx={{ position:'static', backgroundColor:'rgb(30, 127, 178)', height: trigger? '50px':'70px'}} >
+
+    <Grid container  sx={{ position:'sticky' ,   backgroundColor: 'rgb(30, 127, 178)',
+     height:isMediumScreen2 ? '28px':isMediumScreen && isExtraSmallScreen ? '56px':'84px',
+            height: isScrolled ? '50px' : '70px',
+            width: '100%',
+            zIndex:10,
+            top:0,
+          
+           
+            
+      
+            }} >
        
 
       
-      <Grid item xs={3} >
-    <Box  >
-      <img src ={PoliceLogo} alt="PoliceLogo" style={{height:'70px', width:'75px'}}/>
+      <Grid item xs={12} sm ={12} md ={5} lg= {3.5} >
+       
+    <Box onClick={() => navigate('/')}  sx={{display:'flex', flexDirection:'row',alignItems: 'center', color:'white'}} >
+      <img variant='button' src ={PoliceLogo} alt="PoliceLogo" style={{height:isScrolled?'45px':'65px', width:isScrolled?'50px':'70px', marginLeft:'10%', cursor:'pointer'}}/>
+      <Typography style={{fontFamily:'Arial', color:'white', fontSize:isMediumScreen ?'13px': '15px',fontWeight:'bold', marginLeft:'2%', cursor:'pointer' }}>Crime Investigation Department</Typography>
     
     </Box >
+ 
       </Grid>
-      <Grid item xs={7} >
-       {!isMediumScreen && (
+      {!isMediumScreen && (
+      <Grid item xs={12} sm ={12} md={5} lg={6.5}>
+       
         <Box >
         <Tabs 
         value={value}
         TabIndicatorProps={{
           style:{
             top: 0, 
-          backgroundColor: 'yellow', 
-          height: '4%' 
+          backgroundColor: 'rgb(255, 203, 5)', 
+          height: '4px',
+          
+         
           }
         }}
           
         
         onChange={handleChange}
+        
         variant='scrollable'
         
-        scrollButtons={false}
+        scrollButtons={true}
     
         >
        
             {NavTabs.map((navtab,index)=>(
-                  <Tab style={{fontFamily:'Arial', color:'white', fontSize:'0.75rem'}} sx={{display:'flex', flexDirection:'row',alignContent: 'center',mt:"1%", '&.Mui-selected': {
-                    backgroundColor: 'transparent', // Remove background color when selected
-                    userSelect: 'none', // Disable text selection
-                  }}} key={index} label={navtab}> 
-
+                  <Tab style={{fontFamily:'Arial', color:'white', fontWeight:'revert', fontSize:'0.rem', textTransform:'initial'}} disableRipple={true} sx={{display:'flex', flexDirection:'row',alignContent: 'center', mt:isScrolled ? '0.25%': '1%', }} key={index} label={navtab}> 
+                  {console.log(navtab)}
                   </Tab>
             ))
 
@@ -163,17 +219,71 @@ const Navbar = () => {
           
         </Tabs>
         </Box>
-       )}
+     
       </Grid>
-      <Grid item xs={2} >
+        )}
+      <Grid item xs={12} sm={12} md={2} lg ={2} >
+
+        {isMediumScreen && (
+          <Box sx={{
+           
+          }}>
+          
+          <Accordion
+          expanded={expanded}
+          sx={{backgroundColor:'rgb(30, 127, 178)'}}
+        
+          >
+        <AccordionSummary
+        expandIcon={<IoMenuOutline  onClick={handleAccordionClick} style={{color:'white', fontSize:'2rem', cursor:'pointer'}}/>}
+       
+      >
+        </AccordionSummary>
+
+        <AccordionDetails>
+
+         <Tabs
+         value={value}
+         sx={{ backgroundColor: 'rgb(30, 127, 178)'}}
+         orientation = 'vertical'
+          centered
+         onClick = {
+          () => setExpanded(false)
+
+        }
+
+onChange={handleChange}
+         
+         >
+       
+
+        {NavTabs.map((navtab,index)=>(
+              <Tab 
+              disableRipple={true}
+              
+              style={{fontFamily:'Arial', color:'white', fontWeight:'normal', fontSize:'0.rem', textTransform:'initial'}} sx={{ mt:isScrolled ? '0.25%': '1%', marginLeft:'auto', marginRight:'auto'}} key={index} label={navtab}> 
+              {console.log(navtab)}
+              </Tab>
+        ))
+
+        }
+        </Tabs>
+        </AccordionDetails>
+          </Accordion>
+          </Box>
+         
+        )}
         
       </Grid>
       
+      </Grid>
       
-    </Grid>
-    </Slide>
+
+   
     
-  </Box>
+  
+  
+  </>
   )}
 
 
